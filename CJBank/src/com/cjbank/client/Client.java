@@ -10,7 +10,7 @@ public class Client {
 	public Client(String name, String firstname) {
 		this.name = name;
 		this.firstname = firstname;
-		this.clientNumber = totalClients++;
+		this.clientNumber = ++totalClients;
 	}
 
 	public String getName() {
@@ -39,7 +39,7 @@ public class Client {
 
 	@Override
 	public String toString() {
-		return "Client [name=" + name + ", firstname=" + firstname + ", clientNumber=" + clientNumber + "]";
+		return "Client [name= " + name + ", firstname= " + firstname + ", clientNumber= " + clientNumber + "]";
 	}
 
 }
