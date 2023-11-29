@@ -8,13 +8,9 @@ public class Test {
 	// 1.1.2 Creation of main class for tests
 
 	public static void main(String[] args) {
-		// Declare an array of clients
 		Client[] clientsArray = new Client[10];
 
-		// Load the array using a method
 		loadClients(clientsArray);
-
-		// Display the contents of the array using a stream
 		displayClients(clientsArray);
 
 	}
