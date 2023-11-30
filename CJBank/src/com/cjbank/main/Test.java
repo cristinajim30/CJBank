@@ -16,33 +16,27 @@ public class Test {
 		 */
 		Collection<Client> clientsSet = new LinkedHashSet();
 
-		loadClients(clientsSet);
+		clientsSet = loadClients();
 		displayClients(clientsSet);
-
 	}
 
-	private static void loadClients(Collection<Client> clientsSet) {
+	private static Collection<Client> loadClients() {
 		// create a temporal Array to save newClients array.
 		Collection<Client> tempSet = new LinkedHashSet();
 
 		// create 10 clients
 		for (int i = 0; i < 10; i++) {
-			tempSet = generateClient(clientsSet.size() + 1);
-			for (Client client : tempSet) {
-				clientsSet.add(client);
-			}
+			tempSet.add(generateClient(i + 1));
 		}
 
+		return tempSet;
 	}
 
-	private static Collection<Client> generateClient(int clientNumber) {
-		Collection<Client> newClient = new LinkedHashSet();
-
+	private static Client generateClient(int clientNumber) {
 		String name = "name" + clientNumber;
 		String firstName = "firstname" + clientNumber;
 
-		newClient.add(new Client(name, firstName));
-		return newClient;
+		return new Client(name, firstName);
 	}
 
 	private static void displayClients(Collection<Client> clientsSet) {
