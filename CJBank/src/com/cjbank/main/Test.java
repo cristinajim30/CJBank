@@ -1,7 +1,9 @@
 package com.cjbank.main;
 
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 import com.cjbank.client.Client;
 import com.cjbank.client.account.Account;
@@ -23,6 +25,14 @@ public class Test {
 		// 1.2.3 Creation of the tablea account
 		Collection<Account> accounts = loadAccounts(clientsSet);
 		displayAccounts(accounts);
+
+		// 1.3.1 Adaptation of the table of accounts
+
+		// Create a Hashtable using a method
+		Hashtable<Integer, Account> accountHashtable = createHashtable(accounts);
+
+		// Display the Hashtable in ascending order based on the balance
+		displayHashtable(accountHashtable);
 	}
 
 	private static Collection<Client> loadClients() {
@@ -45,6 +55,7 @@ public class Test {
 	}
 
 	private static void displayClients(Collection<Client> clientsSet) {
+		System.out.println("---------CLIENTS----------");
 		clientsSet.stream().forEach(client -> System.out.println(client.toString()));
 
 	}
@@ -65,8 +76,27 @@ public class Test {
 		return accounts;
 	}
 
-	public static void displayAccounts(Collection<Account> accounts) {
+	private static void displayAccounts(Collection<Account> accounts) {
+		System.out.println("\n---------ACCOUNTS----------");
 		accounts.stream().forEach(account -> System.out.println(account.toString()));
+	}
+
+	private static Hashtable<Integer, Account> createHashtable(Collection<Account> accounts) {
+		Hashtable<Integer, Account> accountHashtable = new Hashtable<>();
+
+		for (Account account : accounts) {
+			accountHashtable.put(account.getAccountNumber(), account);
+		}
+
+		return accountHashtable;
+	}
+
+	private static void displayHashtable(Hashtable<Integer, Account> accountHashtable) {
+		System.out.println("\n---------HASTABLE ACCOUNTS----------");
+		accountHashtable.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue((a1, a2) -> Double.compare(a1.getBalance(), a2.getBalance())))
+				.forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue().toString()));
+
 	}
 
 }
