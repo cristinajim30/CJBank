@@ -32,7 +32,7 @@ public abstract class Account {
 	}
 
 	public void setBalance(double amount, Flow flowType) {
-		if ("transfert".equals(flowType)) {
+		if ("transfer".equals(flowType)) {
 
 		}
 
