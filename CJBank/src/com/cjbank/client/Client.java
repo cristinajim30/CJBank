@@ -5,12 +5,12 @@ public class Client {
 	private String name;
 	private String firstname;
 	private int clientNumber;
-	private static int totalClients = 1;
+	private static int totalClients = 0;
 
 	public Client(String name, String firstname) {
 		this.name = name;
 		this.firstname = firstname;
-		this.clientNumber = totalClients++;
+		this.clientNumber = ++totalClients;
 	}
 
 	public String getName() {
