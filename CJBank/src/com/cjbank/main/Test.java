@@ -45,8 +45,12 @@ public class Test {
 		// Create a Flow array using the method
 		Collection<Flow> flows = loadFlows(accounts);
 
-		// Display the contents of the Flow array
+		// Display the contents of the Flow array (REMEMBER REMOVE THOSE TWO LINES)
 		displayFlows(flows);
+
+		// 1.3.5 Updating accounts
+		Account.updateBalances(flows, accountHashtable);
+		displayHashtable(accountHashtable);
 	}
 
 	private static Collection<Client> loadClients() {
@@ -112,14 +116,13 @@ public class Test {
 				.forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue().toString()));
 	}
 
+	// Method to load flows collection
 	private static Collection<Flow> loadFlows(Collection<Account> accounts) {
 		Collection<Flow> flowList = new ArrayList<>();
 
-		// Date of flows, 2 days after the current date
 		LocalDate currentDate = LocalDate.now();
+		// Date of flows, 2 days after the current date
 		LocalDate flowDate = currentDate.plus(Period.ofDays(2));
-		System.out.println("currentDate: " + currentDate);
-		System.out.println("flowDate: " + flowDate);
 		int flowId = 0;
 
 		// Debit of 50 euros from account 1
@@ -141,16 +144,13 @@ public class Test {
 			}
 		}
 
-		// Transfer of 50 € from account n ° 1 to account n ° 2
+		// Transfer of 50 euros from account 1 to account 2
 		flowList.add(new Transfer("Transfer of 50€", ++flowId, 50.0, 2, true, flowDate, 1));
-
-		// Convert List<Flow> to Flow[]
-		// Flow[] flows = new Flow[flowList.size()];
-		// flowList.toArray(flows);
 
 		return flowList;
 	}
 
+	// REMEMBER REMOVE THIS DUMMY METHOD
 	private static void displayFlows(Collection<Flow> flows) {
 		for (Flow flow : flows) {
 			System.out.println("flowClass: " + flow.getClass().getSimpleName());

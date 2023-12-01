@@ -10,10 +10,7 @@ public class Client {
 	public Client(String name, String firstname) {
 		this.name = name;
 		this.firstname = firstname;
-		System.out.println("totalClients: " + totalClients);
 		this.clientNumber = ++totalClients;
-		System.out.println("totalClients dsp: " + totalClients);
-		System.out.println("clientNumber dsp: " + totalClients);
 	}
 
 	public String getName() {
