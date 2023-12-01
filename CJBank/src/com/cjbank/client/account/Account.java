@@ -1,6 +1,7 @@
 package com.cjbank.client.account;
 
 import com.cjbank.client.Client;
+import com.cjbank.flow.Flow;
 
 public abstract class Account {
 	// 1.2.1 Creation of the account class
@@ -30,17 +31,16 @@ public abstract class Account {
 		return balance;
 	}
 
-	public void setBalance(double amount, String flowType) {
-		switch (flowType.toLowerCase()) {
-		case "transfer":
-			// Modify balance accordingly
-		case "credit":
-			// Modify balance accordingly
-		case "debit":
-			// Modify balance accordingly
-		default:
-			this.balance = amount;
+	public void setBalance(double amount, Flow flowType) {
+		if ("transfert".equals(flowType)) {
+
 		}
+
+		/*
+		 * switch (flowType) { case "transfert": // Modify balance accordingly case
+		 * "credit": // Modify balance accordingly case "debit": // Modify balance
+		 * accordingly default: this.balance = amount; }
+		 */
 
 	}
 

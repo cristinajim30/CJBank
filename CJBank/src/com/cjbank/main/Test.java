@@ -50,7 +50,7 @@ public class Test {
 	private static Client generateClient(int clientNumber) {
 		String name = "name" + clientNumber;
 		String firstName = "firstname" + clientNumber;
-
+		System.out.println("antes return new Client");
 		return new Client(name, firstName);
 	}
 
