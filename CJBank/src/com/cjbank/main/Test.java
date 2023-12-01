@@ -22,8 +22,10 @@ public class Test {
 	public static void main(String[] args) {
 		// 1.1.2 Creation of main class for tests
 
-		// use a LinkedHashSet to avoid repeated elements and to maintain the order in
-		// which they are inserted
+		/*
+		 * use a LinkedHashSet to avoid repeated elements and to maintain the order in
+		 * which they are inserted
+		 */
 		Collection<Client> clientsSet = new LinkedHashSet();
 
 		clientsSet = loadClients();
@@ -38,18 +40,13 @@ public class Test {
 		// Create a Hashtable using a method
 		Hashtable<Integer, Account> accountHashtable = createHashtable(accounts);
 
-		// Display the Hashtable in ascending order based on the balance
-		// displayHashtable(accountHashtable);
-
 		// 1.3.4 Creation of the flow array
 		// Create a Flow array using the method
 		Collection<Flow> flows = loadFlows(accounts);
 
-		// Display the contents of the Flow array (REMEMBER REMOVE THOSE TWO LINES)
-		displayFlows(flows);
-
 		// 1.3.5 Updating accounts
 		Account.updateBalances(flows, accountHashtable);
+		// display Hashtable with the update balances
 		displayHashtable(accountHashtable);
 	}
 
@@ -109,6 +106,7 @@ public class Test {
 		return accountHashtable;
 	}
 
+	/* Method to display the Hashtable in ascending order based on the balance */
 	private static void displayHashtable(Hashtable<Integer, Account> accountHashtable) {
 		System.out.println("\n---------HASTABLE ACCOUNTS----------");
 		accountHashtable.entrySet().stream()
@@ -123,6 +121,7 @@ public class Test {
 		LocalDate currentDate = LocalDate.now();
 		// Date of flows, 2 days after the current date
 		LocalDate flowDate = currentDate.plus(Period.ofDays(2));
+		// variable to increment the flow identifier
 		int flowId = 0;
 
 		// Debit of 50 euros from account 1
