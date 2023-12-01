@@ -1,5 +1,8 @@
 package com.cjbank.main;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
@@ -9,6 +12,10 @@ import com.cjbank.client.Client;
 import com.cjbank.client.account.Account;
 import com.cjbank.client.account.CurrentAccount;
 import com.cjbank.client.account.SavingsAccount;
+import com.cjbank.flow.Flow;
+import com.cjbank.flow.credit.Credit;
+import com.cjbank.flow.debit.Debit;
+import com.cjbank.flow.transfer.Transfer;
 
 public class Test {
 
@@ -32,7 +39,14 @@ public class Test {
 		Hashtable<Integer, Account> accountHashtable = createHashtable(accounts);
 
 		// Display the Hashtable in ascending order based on the balance
-		displayHashtable(accountHashtable);
+		// displayHashtable(accountHashtable);
+
+		// 1.3.4 Creation of the flow array
+		// Create a Flow array using the method
+		Collection<Flow> flows = loadFlows(accounts);
+
+		// Display the contents of the Flow array
+		displayFlows(flows);
 	}
 
 	private static Collection<Client> loadClients() {
@@ -50,7 +64,7 @@ public class Test {
 	private static Client generateClient(int clientNumber) {
 		String name = "name" + clientNumber;
 		String firstName = "firstname" + clientNumber;
-		System.out.println("antes return new Client");
+		// System.out.println("antes return new Client");
 		return new Client(name, firstName);
 	}
 
@@ -96,6 +110,62 @@ public class Test {
 		accountHashtable.entrySet().stream()
 				.sorted(Map.Entry.comparingByValue((a1, a2) -> Double.compare(a1.getBalance(), a2.getBalance())))
 				.forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue().toString()));
+	}
+
+	private static Collection<Flow> loadFlows(Collection<Account> accounts) {
+		Collection<Flow> flowList = new ArrayList<>();
+
+		// Date of flows, 2 days after the current date
+		LocalDate currentDate = LocalDate.now();
+		LocalDate flowDate = currentDate.plus(Period.ofDays(2));
+		System.out.println("currentDate: " + currentDate);
+		System.out.println("flowDate: " + flowDate);
+		int flowId = 0;
+
+		// Debit of 50 euros from account 1
+		flowList.add(new Debit("Debit of 50€", ++flowId, 50.0, 1, false, flowDate));
+
+		// Credit of 100.50 euros on all current accounts
+		for (Account account : accounts) {
+			if (account instanceof CurrentAccount) {
+				flowList.add(
+						new Credit("Credit of 100.50€", ++flowId, 100.50, account.getAccountNumber(), true, flowDate));
+			}
+		}
+
+		// Credit of 1500 euros on all savings accounts
+		for (Account account : accounts) {
+			if (account instanceof SavingsAccount) {
+				flowList.add(
+						new Credit("Credit of 1500€", ++flowId, 1500.0, account.getAccountNumber(), true, flowDate));
+			}
+		}
+
+		// Transfer of 50 € from account n ° 1 to account n ° 2
+		flowList.add(new Transfer("Transfer of 50€", ++flowId, 50.0, 2, true, flowDate, 1));
+
+		// Convert List<Flow> to Flow[]
+		// Flow[] flows = new Flow[flowList.size()];
+		// flowList.toArray(flows);
+
+		return flowList;
+	}
+
+	private static void displayFlows(Collection<Flow> flows) {
+		for (Flow flow : flows) {
+			System.out.println("flowClass: " + flow.getClass().getSimpleName());
+			System.out.println("flowIdentifier: " + flow.getIdentifier());
+			System.out.println("targetAccountNumber: " + flow.getTargetAccountNumber());
+			System.out.println("flowAmmount: " + flow.getAmount());
+			System.out.println("flowComment: " + flow.getComment());
+			System.out.println("flowDate: " + flow.getDate());
+			if (flow instanceof Transfer) {
+				Transfer t = (Transfer) flow;
+				System.out.println("Issuer: " + t.getAccountNumberIssuer());
+			}
+			System.out.println("-----------------");
+
+		}
 
 	}
 

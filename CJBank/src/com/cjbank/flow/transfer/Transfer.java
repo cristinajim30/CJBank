@@ -1,6 +1,6 @@
 package com.cjbank.flow.transfer;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import com.cjbank.flow.Flow;
 
@@ -8,8 +8,8 @@ import com.cjbank.flow.Flow;
 public class Transfer extends Flow {
 	private int accountNumberIssuer;
 
-	public Transfer(String comment, int identifier, double amount, int targetAccountNumber, boolean effect, Date date,
-			int accountNumberIssuer) {
+	public Transfer(String comment, int identifier, double amount, int targetAccountNumber, boolean effect,
+			LocalDate date, int accountNumberIssuer) {
 		super(comment, identifier, amount, targetAccountNumber, effect, date);
 		this.accountNumberIssuer = accountNumberIssuer;
 	}

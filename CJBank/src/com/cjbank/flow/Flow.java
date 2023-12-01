@@ -1,6 +1,6 @@
 package com.cjbank.flow;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public abstract class Flow {
 	// 1.3.2 Creation of the Flow class
@@ -9,9 +9,10 @@ public abstract class Flow {
 	private double amount;
 	private int targetAccountNumber;
 	private boolean effect;
-	private Date date;
+	private LocalDate date;
 
-	public Flow(String comment, int identifier, double amount, int targetAccountNumber, boolean effect, Date date) {
+	public Flow(String comment, int identifier, double amount, int targetAccountNumber, boolean effect,
+			LocalDate date) {
 		this.comment = comment;
 		this.identifier = identifier;
 		this.amount = amount;
@@ -60,11 +61,11 @@ public abstract class Flow {
 		this.effect = effect;
 	}
 
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 
