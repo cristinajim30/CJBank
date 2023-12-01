@@ -1,5 +1,6 @@
 package com.cjbank.main;
 
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -48,6 +49,10 @@ public class Test {
 		Account.updateBalances(flows, accountHashtable);
 		// display Hashtable with the update balances
 		displayHashtable(accountHashtable);
+
+		// 2.1 Json File of Flows
+		// Path jsonFilePath = Path.of("files/flow.json");
+		// saveFlowsToJson(jsonFilePath, flows);
 	}
 
 	private static Collection<Client> loadClients() {
@@ -114,7 +119,12 @@ public class Test {
 				.forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue().toString()));
 	}
 
-	// Method to load flows collection
+	/***
+	 * Method to load flows collection
+	 * 
+	 * @param accounts collection
+	 * @return a list of flows
+	 */
 	private static Collection<Flow> loadFlows(Collection<Account> accounts) {
 		Collection<Flow> flowList = new ArrayList<>();
 
@@ -163,9 +173,40 @@ public class Test {
 				System.out.println("Issuer: " + t.getAccountNumberIssuer());
 			}
 			System.out.println("-----------------");
-
 		}
-
 	}
 
+	/***
+	 * Method to save Flow array into a json file
+	 * 
+	 * @param jsonFilePath
+	 * @param flows
+	 */
+	private static void saveFlowsToJson(Path jsonFilePath, Collection<Flow> flows) {
+		/*
+		 * try { // Build a JSON array with the flowlist elements JsonArrayBuilder
+		 * jsonArrayBuilder = Json.createArrayBuilder(); for (Flow flow : flowList) {
+		 * JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
+		 * .add("comment", flow.getComment()) .add("identifier", flow.getIdentifier())
+		 * .add("amount", flow.getAmount()) .add("targetAccountNumber",
+		 * flow.getTargetAccountNumber()) .add("effect", flow.isEffect());
+		 * 
+		 * // Si es una transferencia, agrega sourceAccountNumber al objeto JSON if
+		 * (flow instanceof Transfer) { Transfer transfer = (Transfer) flow;
+		 * jsonObjectBuilder.add("sourceAccountNumber",
+		 * transfer.getSourceAccountNumber()); }
+		 * 
+		 * jsonArrayBuilder.add(jsonObjectBuilder); }
+		 * 
+		 * JsonArray jsonArray = jsonArrayBuilder.build();
+		 * 
+		 * // Escribe el array JSON en el archivo Files.writeString(jsonFilePath,
+		 * jsonArray.toString());
+		 * 
+		 * System.out.println("Flows guardados en el archivo JSON.");
+		 * 
+		 * } catch (IOException e) { // Maneja la excepción, por ejemplo, registra o
+		 * lanza una excepción personalizada e.printStackTrace(); } }
+		 */
+	}
 }
