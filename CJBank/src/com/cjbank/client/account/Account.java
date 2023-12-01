@@ -56,8 +56,7 @@ public abstract class Account {
 				this.balance += amount;
 				System.out.println("entra if1 Transfer: " + this.balance + ", " + flowType.getTargetAccountNumber());
 				System.out.println("this.accountNumber: " + this.accountNumber);
-			}
-			if (this.accountNumber == transfer.getAccountNumberIssuer()) {
+			} else if (this.accountNumber == transfer.getAccountNumberIssuer()) {
 				// If the account number is equal to the issuer account number, subtract the
 				// amount from the balance
 				this.balance -= amount;
@@ -92,7 +91,22 @@ public abstract class Account {
 	// 1.3.5 Updating accounts: Method to update balances
 	public static void updateBalances(Collection<Flow> flows, Hashtable<Integer, Account> accounts) {
 		// Iterate the flows and update the corresponding accounts
-		flows.forEach(flow -> accounts.get(flow.getTargetAccountNumber()).setBalance(flow.getAmount(), flow));
+		// flows.forEach(flow ->
+		// accounts.get(flow.getTargetAccountNumber()).setBalance(flow.getAmount(),
+		// flow));
+		flows.forEach(flow -> {
+			Account targetAccount = accounts.get(flow.getTargetAccountNumber());
+			targetAccount.setBalance(flow.getAmount(), flow);
+
+			// Check if it's a transfer and update the source account's balance
+			if (flow instanceof Transfer) {
+				Transfer transfer = (Transfer) flow;
+				Account issuerAccount = accounts.get(transfer.getAccountNumberIssuer());
+				System.out.println("issuerAccount: " + issuerAccount);
+				issuerAccount.setBalance(flow.getAmount(), flow);
+				System.out.println("issuerAccount dsp setBalance: " + issuerAccount);
+			}
+		});
 
 		// Check for accounts with negative balances using Optional and Predicate
 		// function
