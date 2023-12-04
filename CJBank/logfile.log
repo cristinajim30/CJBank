@@ -1,88 +1,44 @@
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test generateClient
-INFORMACIÓN: name1, firstname1
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test generateClient
-INFORMACIÓN: name2, firstname2
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test generateClient
-INFORMACIÓN: name3, firstname3
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test generateClient
-INFORMACIÓN: name4, firstname4
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test generateClient
-INFORMACIÓN: name5, firstname5
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test generateClient
-INFORMACIÓN: name6, firstname6
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test generateClient
-INFORMACIÓN: name7, firstname7
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test generateClient
-INFORMACIÓN: name8, firstname8
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test generateClient
-INFORMACIÓN: name9, firstname9
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test generateClient
-INFORMACIÓN: name10, firstname10
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test loadClients
-DETALLADO: Clients created
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test loadAccounts
-INFORMACIÓN: accounts LinkHashSet created: [Account [accountNumber=1, label=Savings, balance=0.0, client=Client [name= name1, firstname= firstname1, clientNumber= 1]], Account [accountNumber=2, label=Current, balance=0.0, client=Client [name= name1, firstname= firstname1, clientNumber= 1]], Account [accountNumber=3, label=Savings, balance=0.0, client=Client [name= name2, firstname= firstname2, clientNumber= 2]], Account [accountNumber=4, label=Current, balance=0.0, client=Client [name= name2, firstname= firstname2, clientNumber= 2]], Account [accountNumber=5, label=Savings, balance=0.0, client=Client [name= name3, firstname= firstname3, clientNumber= 3]], Account [accountNumber=6, label=Current, balance=0.0, client=Client [name= name3, firstname= firstname3, clientNumber= 3]], Account [accountNumber=7, label=Savings, balance=0.0, client=Client [name= name4, firstname= firstname4, clientNumber= 4]], Account [accountNumber=8, label=Current, balance=0.0, client=Client [name= name4, firstname= firstname4, clientNumber= 4]], Account [accountNumber=9, label=Savings, balance=0.0, client=Client [name= name5, firstname= firstname5, clientNumber= 5]], Account [accountNumber=10, label=Current, balance=0.0, client=Client [name= name5, firstname= firstname5, clientNumber= 5]], Account [accountNumber=11, label=Savings, balance=0.0, client=Client [name= name6, firstname= firstname6, clientNumber= 6]], Account [accountNumber=12, label=Current, balance=0.0, client=Client [name= name6, firstname= firstname6, clientNumber= 6]], Account [accountNumber=13, label=Savings, balance=0.0, client=Client [name= name7, firstname= firstname7, clientNumber= 7]], Account [accountNumber=14, label=Current, balance=0.0, client=Client [name= name7, firstname= firstname7, clientNumber= 7]], Account [accountNumber=15, label=Savings, balance=0.0, client=Client [name= name8, firstname= firstname8, clientNumber= 8]], Account [accountNumber=16, label=Current, balance=0.0, client=Client [name= name8, firstname= firstname8, clientNumber= 8]], Account [accountNumber=17, label=Savings, balance=0.0, client=Client [name= name9, firstname= firstname9, clientNumber= 9]], Account [accountNumber=18, label=Current, balance=0.0, client=Client [name= name9, firstname= firstname9, clientNumber= 9]], Account [accountNumber=19, label=Savings, balance=0.0, client=Client [name= name10, firstname= firstname10, clientNumber= 10]], Account [accountNumber=20, label=Current, balance=0.0, client=Client [name= name10, firstname= firstname10, clientNumber= 10]]]
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test createHashtable
-INFORMACIÓN: account Hashtable created
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test loadFlows
-INFORMACIÓN: flowDate for Flows: 2023-12-06
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test loadFlows
-INFORMACIÓN: flowList created: [com.cjbank.flow.debit.Debit@2b9627bc, com.cjbank.flow.credit.Credit@65e2dbf3, com.cjbank.flow.credit.Credit@4f970963, com.cjbank.flow.credit.Credit@61f8bee4, com.cjbank.flow.credit.Credit@7b49cea0, com.cjbank.flow.credit.Credit@887af79, com.cjbank.flow.credit.Credit@7fac631b, com.cjbank.flow.credit.Credit@5b87ed94, com.cjbank.flow.credit.Credit@6e0e048a, com.cjbank.flow.credit.Credit@5bc79255, com.cjbank.flow.credit.Credit@47ef968d, com.cjbank.flow.credit.Credit@23e028a9, com.cjbank.flow.credit.Credit@3dd4520b, com.cjbank.flow.credit.Credit@5ae63ade, com.cjbank.flow.credit.Credit@610694f1, com.cjbank.flow.credit.Credit@43814d18, com.cjbank.flow.credit.Credit@5c5a1b69, com.cjbank.flow.credit.Credit@3701eaf6, com.cjbank.flow.credit.Credit@627551fb, com.cjbank.flow.credit.Credit@2b552920, com.cjbank.flow.credit.Credit@2758fe70, com.cjbank.flow.transfer.Transfer@1f36e637]
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test saveFlowsToJson
-INFORMACIÓN: jsonArray created: [{"comment":"Debit of 50€","identifier":1,"amount":50.0,"targetAccountNumber":1,"effect":false,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":2,"amount":100.5,"targetAccountNumber":2,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":3,"amount":100.5,"targetAccountNumber":4,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":4,"amount":100.5,"targetAccountNumber":6,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":5,"amount":100.5,"targetAccountNumber":8,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":6,"amount":100.5,"targetAccountNumber":10,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":7,"amount":100.5,"targetAccountNumber":12,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":8,"amount":100.5,"targetAccountNumber":14,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":9,"amount":100.5,"targetAccountNumber":16,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":10,"amount":100.5,"targetAccountNumber":18,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":11,"amount":100.5,"targetAccountNumber":20,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":12,"amount":1500.0,"targetAccountNumber":1,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":13,"amount":1500.0,"targetAccountNumber":3,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":14,"amount":1500.0,"targetAccountNumber":5,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":15,"amount":1500.0,"targetAccountNumber":7,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":16,"amount":1500.0,"targetAccountNumber":9,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":17,"amount":1500.0,"targetAccountNumber":11,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":18,"amount":1500.0,"targetAccountNumber":13,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":19,"amount":1500.0,"targetAccountNumber":15,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":20,"amount":1500.0,"targetAccountNumber":17,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":21,"amount":1500.0,"targetAccountNumber":19,"effect":true,"date":"2023-12-06"},{"comment":"Transfer of 50€","identifier":22,"amount":50.0,"targetAccountNumber":2,"effect":true,"date":"2023-12-06","accountNumberIssuer":1}]
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test writeJsonFile
-INFORMACIÓN: JsonFile already exists and its to be deleted: Files\flows.json
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test writeJsonFile
-DETALLADO: Flows stored in the JSON file: Files\flows.json
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test writeAccountsToXML
-INFORMACIÓN: Xml Documment created
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test writeXmlFile
-INFORMACIÓN: The XML file exists, so delete it: Files\accounts.xml
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test writeXmlFile
-DETALLADO: Accounts stored in the XML file: Files\accounts.xml
-dic 04, 2023 1:48:11 P. M. com.cjbank.main.Test main
-DETALLADO: -----The process has been successfully completed-----
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test generateClient
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test generateClient
 INFORMACIÓN: name 1, firstname 1
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test generateClient
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test generateClient
 INFORMACIÓN: name 2, firstname 2
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test generateClient
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test generateClient
 INFORMACIÓN: name 3, firstname 3
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test generateClient
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test generateClient
 INFORMACIÓN: name 4, firstname 4
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test generateClient
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test generateClient
 INFORMACIÓN: name 5, firstname 5
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test generateClient
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test generateClient
 INFORMACIÓN: name 6, firstname 6
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test generateClient
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test generateClient
 INFORMACIÓN: name 7, firstname 7
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test generateClient
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test generateClient
 INFORMACIÓN: name 8, firstname 8
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test generateClient
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test generateClient
 INFORMACIÓN: name 9, firstname 9
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test generateClient
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test generateClient
 INFORMACIÓN: name 10, firstname 10
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test loadClients
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test loadClients
 DETALLADO: Clients created
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test loadAccounts
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test loadAccounts
 INFORMACIÓN: accounts LinkHashSet created: [Account [accountNumber=1, label=Savings, balance=0.0, client=Client [name= name1, firstname= firstname1, clientNumber= 1]], Account [accountNumber=2, label=Current, balance=0.0, client=Client [name= name1, firstname= firstname1, clientNumber= 1]], Account [accountNumber=3, label=Savings, balance=0.0, client=Client [name= name2, firstname= firstname2, clientNumber= 2]], Account [accountNumber=4, label=Current, balance=0.0, client=Client [name= name2, firstname= firstname2, clientNumber= 2]], Account [accountNumber=5, label=Savings, balance=0.0, client=Client [name= name3, firstname= firstname3, clientNumber= 3]], Account [accountNumber=6, label=Current, balance=0.0, client=Client [name= name3, firstname= firstname3, clientNumber= 3]], Account [accountNumber=7, label=Savings, balance=0.0, client=Client [name= name4, firstname= firstname4, clientNumber= 4]], Account [accountNumber=8, label=Current, balance=0.0, client=Client [name= name4, firstname= firstname4, clientNumber= 4]], Account [accountNumber=9, label=Savings, balance=0.0, client=Client [name= name5, firstname= firstname5, clientNumber= 5]], Account [accountNumber=10, label=Current, balance=0.0, client=Client [name= name5, firstname= firstname5, clientNumber= 5]], Account [accountNumber=11, label=Savings, balance=0.0, client=Client [name= name6, firstname= firstname6, clientNumber= 6]], Account [accountNumber=12, label=Current, balance=0.0, client=Client [name= name6, firstname= firstname6, clientNumber= 6]], Account [accountNumber=13, label=Savings, balance=0.0, client=Client [name= name7, firstname= firstname7, clientNumber= 7]], Account [accountNumber=14, label=Current, balance=0.0, client=Client [name= name7, firstname= firstname7, clientNumber= 7]], Account [accountNumber=15, label=Savings, balance=0.0, client=Client [name= name8, firstname= firstname8, clientNumber= 8]], Account [accountNumber=16, label=Current, balance=0.0, client=Client [name= name8, firstname= firstname8, clientNumber= 8]], Account [accountNumber=17, label=Savings, balance=0.0, client=Client [name= name9, firstname= firstname9, clientNumber= 9]], Account [accountNumber=18, label=Current, balance=0.0, client=Client [name= name9, firstname= firstname9, clientNumber= 9]], Account [accountNumber=19, label=Savings, balance=0.0, client=Client [name= name10, firstname= firstname10, clientNumber= 10]], Account [accountNumber=20, label=Current, balance=0.0, client=Client [name= name10, firstname= firstname10, clientNumber= 10]]]
-dic 04, 2023 2:09:20 P. M. com.cjbank.main.Test createHashtable
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test createHashtable
 INFORMACIÓN: account Hashtable created
-dic 04, 2023 2:09:21 P. M. com.cjbank.main.Test loadFlows
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test loadFlows
 INFORMACIÓN: flowDate for Flows: 2023-12-06
-dic 04, 2023 2:09:21 P. M. com.cjbank.main.Test loadFlows
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test loadFlows
 INFORMACIÓN: flowList created: [com.cjbank.flow.debit.Debit@3701eaf6, com.cjbank.flow.credit.Credit@627551fb, com.cjbank.flow.credit.Credit@2b552920, com.cjbank.flow.credit.Credit@2758fe70, com.cjbank.flow.credit.Credit@1f36e637, com.cjbank.flow.credit.Credit@578486a3, com.cjbank.flow.credit.Credit@551aa95a, com.cjbank.flow.credit.Credit@35d176f7, com.cjbank.flow.credit.Credit@1dfe2924, com.cjbank.flow.credit.Credit@6ebc05a6, com.cjbank.flow.credit.Credit@6e6c3152, com.cjbank.flow.credit.Credit@50b494a6, com.cjbank.flow.credit.Credit@3cef309d, com.cjbank.flow.credit.Credit@32709393, com.cjbank.flow.credit.Credit@3d99d22e, com.cjbank.flow.credit.Credit@49fc609f, com.cjbank.flow.credit.Credit@cd2dae5, com.cjbank.flow.credit.Credit@3a883ce7, com.cjbank.flow.credit.Credit@4973813a, com.cjbank.flow.credit.Credit@6321e813, com.cjbank.flow.credit.Credit@79be0360, com.cjbank.flow.transfer.Transfer@22a67b4]
-dic 04, 2023 2:09:21 P. M. com.cjbank.main.Test saveFlowsToJson
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test saveFlowsToJson
 INFORMACIÓN: jsonArray created: [{"comment":"Debit of 50€","identifier":1,"amount":50.0,"targetAccountNumber":1,"effect":false,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":2,"amount":100.5,"targetAccountNumber":2,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":3,"amount":100.5,"targetAccountNumber":4,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":4,"amount":100.5,"targetAccountNumber":6,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":5,"amount":100.5,"targetAccountNumber":8,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":6,"amount":100.5,"targetAccountNumber":10,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":7,"amount":100.5,"targetAccountNumber":12,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":8,"amount":100.5,"targetAccountNumber":14,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":9,"amount":100.5,"targetAccountNumber":16,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":10,"amount":100.5,"targetAccountNumber":18,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 100.50€","identifier":11,"amount":100.5,"targetAccountNumber":20,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":12,"amount":1500.0,"targetAccountNumber":1,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":13,"amount":1500.0,"targetAccountNumber":3,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":14,"amount":1500.0,"targetAccountNumber":5,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":15,"amount":1500.0,"targetAccountNumber":7,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":16,"amount":1500.0,"targetAccountNumber":9,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":17,"amount":1500.0,"targetAccountNumber":11,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":18,"amount":1500.0,"targetAccountNumber":13,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":19,"amount":1500.0,"targetAccountNumber":15,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":20,"amount":1500.0,"targetAccountNumber":17,"effect":true,"date":"2023-12-06"},{"comment":"Credit of 1500€","identifier":21,"amount":1500.0,"targetAccountNumber":19,"effect":true,"date":"2023-12-06"},{"comment":"Transfer of 50€","identifier":22,"amount":50.0,"targetAccountNumber":2,"effect":true,"date":"2023-12-06","accountNumberIssuer":1}]
-dic 04, 2023 2:09:21 P. M. com.cjbank.main.Test writeJsonFile
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test writeJsonFile
 INFORMACIÓN: JsonFile already exists and its to be deleted: Files\flows.json
-dic 04, 2023 2:09:21 P. M. com.cjbank.main.Test writeJsonFile
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test writeJsonFile
 DETALLADO: Flows stored in the JSON file: Files\flows.json
-dic 04, 2023 2:09:21 P. M. com.cjbank.main.Test writeAccountsToXML
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test writeAccountsToXML
 INFORMACIÓN: Xml Documment created
-dic 04, 2023 2:09:21 P. M. com.cjbank.main.Test writeXmlFile
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test writeXmlFile
 INFORMACIÓN: The XML file exists, so delete it: Files\accounts.xml
-dic 04, 2023 2:09:21 P. M. com.cjbank.main.Test writeXmlFile
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test writeXmlFile
 DETALLADO: Accounts stored in the XML file: Files\accounts.xml
-dic 04, 2023 2:09:21 P. M. com.cjbank.main.Test main
+dic 04, 2023 2:14:07 P. M. com.cjbank.main.Test main
 DETALLADO: -----The process has been successfully completed-----
