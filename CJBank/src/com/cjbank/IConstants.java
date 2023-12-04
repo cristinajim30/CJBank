@@ -18,5 +18,5 @@ public interface IConstants {
 	public static final String FICH_LOG = "logfile.log";
 
 	public static void checkFileDirectoryExists() {
-	};
+	}
 }
