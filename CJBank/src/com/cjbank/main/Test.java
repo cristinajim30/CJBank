@@ -239,18 +239,10 @@ public class Test implements com.cjbank.IConstants {
 
 	private static void writeJsonFile(Path jsonFilePath, JsonArray jsonArray) {
 		try {
-			Path folderPath = FileSystems.getDefault().getPath(FILE_DIRECTORY);
+
 			// Check if the file already exists
 			boolean fileExists = Files.exists(jsonFilePath);
-
-			// Create the File folder if not exist
-			if (Files.notExists(folderPath)) {
-				try {
-					Files.createDirectories(folderPath);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			checkFileDirectoryExists();
 			// If the file already exists, delete it before writing the new data.
 			if (fileExists) {
 				Files.delete(jsonFilePath);
@@ -265,22 +257,37 @@ public class Test implements com.cjbank.IConstants {
 		}
 	}
 
+	private static void checkFileDirectoryExists() {
+		Path folderPath = FileSystems.getDefault().getPath(FILE_DIRECTORY);
+		// Create the File folder if not exist
+		System.out.println("antes if");
+		if (Files.notExists(folderPath)) {
+			try {
+				System.out.println("entra en if porque no existe");
+				Files.createDirectories(folderPath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("fin metodo");
+	}
+
 	private static void writeAccountsToXML(Path xmlFilePath, Collection<Account> accounts) {
 		try {
-			// Crea una nueva instancia de DocumentBuilderFactory
+			// Create a new instance of DocumentBuilderFactory
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder;
 
 			docBuilder = docFactory.newDocumentBuilder();
 
-			// Crea un nuevo documento XML
+			// Create a new document XML
 			Document doc = docBuilder.newDocument();
 
-			// Crea el elemento raíz
+			// Create the root element
 			Element rootElement = doc.createElement("accounts");
 			doc.appendChild(rootElement);
 
-			// Agrega elementos para cada cuenta
+			// Add items for each account
 			for (Account account : accounts) {
 				Element accountElement = doc.createElement("account");
 				rootElement.appendChild(accountElement);
@@ -300,7 +307,7 @@ public class Test implements com.cjbank.IConstants {
 				Element clientElement = doc.createElement("client");
 				accountElement.appendChild(clientElement);
 
-				// Agrega los nodos hijos del elemento Client
+				// Adds the child nodes of the Client element
 				Element nameElement = doc.createElement("name");
 				nameElement.appendChild(doc.createTextNode(account.getClient().getName()));
 				clientElement.appendChild(nameElement);
@@ -314,7 +321,7 @@ public class Test implements com.cjbank.IConstants {
 						.appendChild(doc.createTextNode(String.valueOf(account.getClient().getClientNumber())));
 				clientElement.appendChild(clientNumberElement);
 
-				// Agrega el elemento de cuenta al elemento raíz
+				// Adds the account element to the root element
 				rootElement.appendChild(accountElement);
 			}
 
@@ -325,8 +332,22 @@ public class Test implements com.cjbank.IConstants {
 
 	}
 
+	/**
+	 * method to write the XML document into a file
+	 * 
+	 * @param xmlFilePath
+	 * @param doc
+	 */
 	private static void writeXmlFile(Path xmlFilePath, Document doc) {
 		try {
+			// Check if the file already exists
+			boolean fileExists = Files.exists(xmlFilePath);
+			checkFileDirectoryExists();
+			// If the file already exists, delete it before writing the new data.
+			if (fileExists) {
+				Files.delete(xmlFilePath);
+			}
+
 			// Guarda el documento XML en el archivo especificado
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer;
@@ -342,6 +363,8 @@ public class Test implements com.cjbank.IConstants {
 			transformer.transform(source, result);
 			System.out.println("Cuentas guardadas en el archivo XML: " + xmlFilePath);
 		} catch (TransformerException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
