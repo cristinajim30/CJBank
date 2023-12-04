@@ -46,17 +46,16 @@ import jakarta.json.JsonObjectBuilder;
 
 public class Test implements com.cjbank.IConstants {
 	// create a logger object for logging
-	public static Logger logger;
+	public static final Logger logger = Logger.getLogger(LOGGER_NAME);
 
 	public static void main(String[] args) {
-		logger = Logger.getLogger(LOGGER_NAME);
 		try {
 			FileHandler fh = new FileHandler(FICH_LOG, true);
 			SimpleFormatter formato = new SimpleFormatter();
 			logger.addHandler(fh);
 			fh.setFormatter(formato);
 		} catch (SecurityException | IOException e) {
-			logger.log(Level.WARNING, "Exception creating Logger object: " + e);
+			logger.log(Level.WARNING, "Exception creating Logger object: ", e);
 			e.printStackTrace();
 		}
 
@@ -66,7 +65,7 @@ public class Test implements com.cjbank.IConstants {
 		 * use a LinkedHashSet to avoid repeated elements and to maintain the order in
 		 * which they are inserted
 		 */
-		Collection<Client> clientsSet = new LinkedHashSet();
+		Collection<Client> clientsSet;
 
 		clientsSet = loadClients();
 		displayClients(clientsSet);
@@ -102,7 +101,7 @@ public class Test implements com.cjbank.IConstants {
 
 	private static Collection<Client> loadClients() {
 		// create a temporal Array to save newClients array.
-		Collection<Client> tempSet = new LinkedHashSet();
+		Collection<Client> tempSet = new LinkedHashSet<>();
 
 		// create 10 clients
 		for (int i = 0; i < 10; i++) {
@@ -116,7 +115,7 @@ public class Test implements com.cjbank.IConstants {
 	private static Client generateClient(int clientNumber) {
 		String name = "name" + clientNumber;
 		String firstName = "firstname" + clientNumber;
-		logger.log(Level.INFO, "name" + clientNumber + ", firstname" + clientNumber);
+		logger.log(Level.INFO, "name {0}, firstname {0}", clientNumber);
 		return new Client(name, firstName);
 	}
 
@@ -127,7 +126,7 @@ public class Test implements com.cjbank.IConstants {
 	}
 
 	private static Collection<Account> loadAccounts(Collection<Client> clientsSet) {
-		Collection<Account> accounts = new LinkedHashSet();
+		Collection<Account> accounts = new LinkedHashSet<>();
 
 		for (Client client : clientsSet) {
 			// Generate a saving account with zero balance
@@ -138,7 +137,7 @@ public class Test implements com.cjbank.IConstants {
 			CurrentAccount currentAccount = new CurrentAccount("Current", client);
 			accounts.add(currentAccount);
 		}
-		logger.log(Level.INFO, "accounts LinkHashSet created: " + accounts);
+		logger.log(Level.INFO, "accounts LinkHashSet created: {0}", accounts);
 		return accounts;
 	}
 
@@ -177,7 +176,7 @@ public class Test implements com.cjbank.IConstants {
 		LocalDate currentDate = LocalDate.now();
 		// Date of flows, 2 days after the current date
 		LocalDate flowDate = currentDate.plus(Period.ofDays(2));
-		logger.log(Level.INFO, "flowDate for Flows: " + flowDate);
+		logger.log(Level.INFO, "flowDate for Flows: {0}", flowDate);
 		// variable to increment the flow identifier
 		int flowId = 0;
 
@@ -203,7 +202,7 @@ public class Test implements com.cjbank.IConstants {
 		// Transfer of 50 euros from account 1 to account 2
 		flowList.add(new Transfer("Transfer of 50€", ++flowId, 50.0, 2, true, flowDate, 1));
 
-		logger.log(Level.INFO, "flowList created: " + flowList);
+		logger.log(Level.INFO, "flowList created: {0}", flowList);
 		return flowList;
 	}
 
@@ -236,7 +235,7 @@ public class Test implements com.cjbank.IConstants {
 		}
 		// build the jsonArray
 		JsonArray jsonArray = jsonArrayBuilder.build();
-		logger.log(Level.INFO, "jsonArray created: " + jsonArray);
+		logger.log(Level.INFO, "jsonArray created: {0}", jsonArray);
 		writeJsonFile(jsonFilePath, jsonArray);
 
 	}
@@ -249,17 +248,17 @@ public class Test implements com.cjbank.IConstants {
 			checkFileDirectoryExists();
 			// If the file already exists, delete it before writing the new data.
 			if (fileExists) {
-				logger.log(Level.INFO, "JsonFile already exists and its to be deleted: " + jsonFilePath);
+				logger.log(Level.INFO, "JsonFile already exists and its to be deleted: {0}", jsonFilePath);
 				Files.delete(jsonFilePath);
 			}
 
 			// Write the Json array in the file
 			Files.writeString(jsonFilePath, jsonArray.toString());
 			logger.setLevel(Level.FINE);
-			logger.log(Level.FINE, "Flows stored in the JSON file: " + jsonFilePath);
+			logger.log(Level.FINE, "Flows stored in the JSON file: {0}", jsonFilePath);
 			System.out.println("Flows stored in the JSON file: " + jsonFilePath);
 		} catch (IOException e) {
-			logger.log(Level.WARNING, "IOException in writeJsonFile: " + e);
+			logger.log(Level.WARNING, "IOException in writeJsonFile: ", e);
 			e.printStackTrace();
 		}
 	}
@@ -273,9 +272,9 @@ public class Test implements com.cjbank.IConstants {
 		if (Files.notExists(folderPath)) {
 			try {
 				Files.createDirectories(folderPath);
-				logger.log(Level.INFO, "Directorio creado: " + folderPath);
+				logger.log(Level.INFO, "Directorio creado: {0}", folderPath);
 			} catch (IOException e) {
-				logger.log(Level.WARNING, "IOException in checkFileDirectoryExists: " + e);
+				logger.log(Level.WARNING, "IOException in checkFileDirectoryExists: ", e);
 				e.printStackTrace();
 			}
 		}
@@ -343,7 +342,7 @@ public class Test implements com.cjbank.IConstants {
 			logger.log(Level.INFO, "Xml Documment created");
 			writeXmlFile(xmlFilePath, doc);
 		} catch (ParserConfigurationException e) {
-			logger.log(Level.WARNING, "ParserConfigurationException in writeAccountsToXML: " + e);
+			logger.log(Level.WARNING, "ParserConfigurationException in writeAccountsToXML: ", e);
 			e.printStackTrace();
 		}
 
@@ -362,7 +361,7 @@ public class Test implements com.cjbank.IConstants {
 			checkFileDirectoryExists();
 			// If the file already exists, delete it before writing the new data.
 			if (fileExists) {
-				logger.log(Level.INFO, "The XML file exists, so delete it: " + xmlFilePath);
+				logger.log(Level.INFO, "The XML file exists, so delete it: {0}", xmlFilePath);
 				Files.delete(xmlFilePath);
 			}
 
@@ -380,11 +379,11 @@ public class Test implements com.cjbank.IConstants {
 			// Perform the transformation and save the file
 			transformer.transform(source, result);
 			logger.setLevel(Level.FINE);
-			logger.log(Level.FINE, "Accounts stored in the XML file: " + xmlFilePath);
+			logger.log(Level.FINE, "Accounts stored in the XML file: {0}", xmlFilePath);
 			System.out.println("Accounts stored in the XML file: " + xmlFilePath);
 
 		} catch (TransformerException | IOException e) {
-			logger.log(Level.WARNING, "Exception in writeXMLFile: " + e);
+			logger.log(Level.WARNING, "Exception in writeXMLFile: ", e);
 			e.printStackTrace();
 		}
 
