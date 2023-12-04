@@ -240,6 +240,12 @@ public class Test implements com.cjbank.IConstants {
 
 	}
 
+	/**
+	 * Method to write json array in a json file
+	 * 
+	 * @param jsonFilePath
+	 * @param jsonArray
+	 */
 	private static void writeJsonFile(Path jsonFilePath, JsonArray jsonArray) {
 		try {
 
