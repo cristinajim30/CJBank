@@ -12,6 +12,10 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,8 +45,21 @@ import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
 
 public class Test implements com.cjbank.IConstants {
+	// create a logger object for logging
+	public static Logger logger;
 
 	public static void main(String[] args) {
+		logger = Logger.getLogger(LOGGER_NAME);
+		try {
+			FileHandler fh = new FileHandler(FICH_LOG, true);
+			SimpleFormatter formato = new SimpleFormatter();
+			logger.addHandler(fh);
+			fh.setFormatter(formato);
+		} catch (SecurityException | IOException e) {
+			logger.log(Level.WARNING, "Exception creating Logger object: " + e);
+			e.printStackTrace();
+		}
+
 		// 1.1.2 Creation of main class for tests
 
 		/*
@@ -66,7 +83,6 @@ public class Test implements com.cjbank.IConstants {
 		// 1.3.4 Creation of the flow array
 		// Create a Flow array using the method
 		Collection<Flow> flows = loadFlows(accounts);
-		// displayFlows(flows);REMOVE THIS LINE
 
 		// 1.3.5 Updating accounts
 		Account.updateBalances(flows, accountHashtable);
@@ -80,6 +96,8 @@ public class Test implements com.cjbank.IConstants {
 		// 2.2 XML file of account
 		Path xmlFilePath = FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_XML);
 		writeAccountsToXML(xmlFilePath, accounts);
+		logger.setLevel(Level.FINE);
+		logger.log(Level.FINE, "-----The process has been successfully completed-----");
 	}
 
 	private static Collection<Client> loadClients() {
@@ -90,14 +108,15 @@ public class Test implements com.cjbank.IConstants {
 		for (int i = 0; i < 10; i++) {
 			tempSet.add(generateClient(i + 1));
 		}
-
+		logger.setLevel(Level.FINE);
+		logger.log(Level.FINE, "Clients created");
 		return tempSet;
 	}
 
 	private static Client generateClient(int clientNumber) {
 		String name = "name" + clientNumber;
 		String firstName = "firstname" + clientNumber;
-		// System.out.println("antes return new Client");
+		logger.log(Level.INFO, "name" + clientNumber + ", firstname" + clientNumber);
 		return new Client(name, firstName);
 	}
 
@@ -119,7 +138,7 @@ public class Test implements com.cjbank.IConstants {
 			CurrentAccount currentAccount = new CurrentAccount("Current", client);
 			accounts.add(currentAccount);
 		}
-
+		logger.log(Level.INFO, "accounts LinkHashSet created: " + accounts);
 		return accounts;
 	}
 
@@ -134,7 +153,7 @@ public class Test implements com.cjbank.IConstants {
 		for (Account account : accounts) {
 			accountHashtable.put(account.getAccountNumber(), account);
 		}
-
+		logger.log(Level.INFO, "account Hashtable created");
 		return accountHashtable;
 	}
 
@@ -158,6 +177,7 @@ public class Test implements com.cjbank.IConstants {
 		LocalDate currentDate = LocalDate.now();
 		// Date of flows, 2 days after the current date
 		LocalDate flowDate = currentDate.plus(Period.ofDays(2));
+		logger.log(Level.INFO, "flowDate for Flows: " + flowDate);
 		// variable to increment the flow identifier
 		int flowId = 0;
 
@@ -183,24 +203,8 @@ public class Test implements com.cjbank.IConstants {
 		// Transfer of 50 euros from account 1 to account 2
 		flowList.add(new Transfer("Transfer of 50€", ++flowId, 50.0, 2, true, flowDate, 1));
 
+		logger.log(Level.INFO, "flowList created: " + flowList);
 		return flowList;
-	}
-
-	// REMEMBER REMOVE THIS DUMMY METHOD
-	private static void displayFlows(Collection<Flow> flows) {
-		for (Flow flow : flows) {
-			System.out.println("flowClass: " + flow.getClass().getSimpleName());
-			System.out.println("flowIdentifier: " + flow.getIdentifier());
-			System.out.println("targetAccountNumber: " + flow.getTargetAccountNumber());
-			System.out.println("flowAmmount: " + flow.getAmount());
-			System.out.println("flowComment: " + flow.getComment());
-			System.out.println("flowDate: " + flow.getDate());
-			if (flow instanceof Transfer) {
-				Transfer t = (Transfer) flow;
-				System.out.println("Issuer: " + t.getAccountNumberIssuer());
-			}
-			System.out.println("-----------------");
-		}
 	}
 
 	/***
@@ -232,7 +236,7 @@ public class Test implements com.cjbank.IConstants {
 		}
 		// build the jsonArray
 		JsonArray jsonArray = jsonArrayBuilder.build();
-
+		logger.log(Level.INFO, "jsonArray created: " + jsonArray);
 		writeJsonFile(jsonFilePath, jsonArray);
 
 	}
@@ -240,35 +244,50 @@ public class Test implements com.cjbank.IConstants {
 	private static void writeJsonFile(Path jsonFilePath, JsonArray jsonArray) {
 		try {
 
-			// Check if the file already exists
+			// Check if the file and the "File" directory already exists
 			boolean fileExists = Files.exists(jsonFilePath);
 			checkFileDirectoryExists();
 			// If the file already exists, delete it before writing the new data.
 			if (fileExists) {
+				logger.log(Level.INFO, "JsonFile already exists and its to be deleted: " + jsonFilePath);
 				Files.delete(jsonFilePath);
 			}
 
 			// Write the Json array in the file
 			Files.writeString(jsonFilePath, jsonArray.toString());
-
-			System.out.println("Flows stored in the JSON file.");
+			logger.setLevel(Level.FINE);
+			logger.log(Level.FINE, "Flows stored in the JSON file: " + jsonFilePath);
+			System.out.println("Flows stored in the JSON file: " + jsonFilePath);
 		} catch (IOException e) {
+			logger.log(Level.WARNING, "IOException in writeJsonFile: " + e);
 			e.printStackTrace();
 		}
 	}
 
-	private static void checkFileDirectoryExists() {
+	/**
+	 * Method that creates the File directory if it doesn't exist
+	 */
+	public static void checkFileDirectoryExists() {
 		Path folderPath = FileSystems.getDefault().getPath(FILE_DIRECTORY);
 		// Create the File folder if not exist
 		if (Files.notExists(folderPath)) {
 			try {
 				Files.createDirectories(folderPath);
+				logger.log(Level.INFO, "Directorio creado: " + folderPath);
 			} catch (IOException e) {
+				logger.log(Level.WARNING, "IOException in checkFileDirectoryExists: " + e);
 				e.printStackTrace();
 			}
 		}
 	}
 
+	/**
+	 * Method to write an XML document with the information of the accounts
+	 * ArrayList
+	 * 
+	 * @param xmlFilePath
+	 * @param accounts
+	 */
 	private static void writeAccountsToXML(Path xmlFilePath, Collection<Account> accounts) {
 		try {
 			// Create a new instance of DocumentBuilderFactory
@@ -321,9 +340,10 @@ public class Test implements com.cjbank.IConstants {
 				// Adds the account element to the root element
 				rootElement.appendChild(accountElement);
 			}
-
+			logger.log(Level.INFO, "Xml Documment created");
 			writeXmlFile(xmlFilePath, doc);
 		} catch (ParserConfigurationException e) {
+			logger.log(Level.WARNING, "ParserConfigurationException in writeAccountsToXML: " + e);
 			e.printStackTrace();
 		}
 
@@ -342,26 +362,29 @@ public class Test implements com.cjbank.IConstants {
 			checkFileDirectoryExists();
 			// If the file already exists, delete it before writing the new data.
 			if (fileExists) {
+				logger.log(Level.INFO, "The XML file exists, so delete it: " + xmlFilePath);
 				Files.delete(xmlFilePath);
 			}
 
-			// Guarda el documento XML en el archivo especificado
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			// Saves the XML document into the specified file
+			TransformerFactory transformerFactory = TransformerFactory.newDefaultInstance();
 			Transformer transformer;
 			transformer = transformerFactory.newTransformer();
 
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(xmlFilePath.toFile());
 
-			// Configura el formato de salida (opcional)
+			// Set the output format
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
-			// Realiza la transformación y guarda el archivo
+			// Perform the transformation and save the file
 			transformer.transform(source, result);
-			System.out.println("Cuentas guardadas en el archivo XML: " + xmlFilePath);
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+			logger.setLevel(Level.FINE);
+			logger.log(Level.FINE, "Accounts stored in the XML file: " + xmlFilePath);
+			System.out.println("Accounts stored in the XML file: " + xmlFilePath);
+
+		} catch (TransformerException | IOException e) {
+			logger.log(Level.WARNING, "Exception in writeXMLFile: " + e);
 			e.printStackTrace();
 		}
 

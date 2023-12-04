@@ -13,7 +13,10 @@ public interface IConstants {
 	public final String FLOW_EFFECT = "effect";
 	public final String FLOW_DATE = "date";
 	public final String FLOW_ACCOUNTNUMBERISSUER = "accountNumberIssuer";
-	// constants to Account.class
-	// public final String EURO_SYMBOL = "€";
 
+	public static final String LOGGER_NAME = "Log Cjbank: ";
+	public static final String FICH_LOG = "logfile.log";
+
+	public static void checkFileDirectoryExists() {
+	};
 }
