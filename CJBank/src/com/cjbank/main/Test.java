@@ -1,8 +1,11 @@
 package com.cjbank.main;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -17,6 +20,11 @@ import com.cjbank.flow.Flow;
 import com.cjbank.flow.credit.Credit;
 import com.cjbank.flow.debit.Debit;
 import com.cjbank.flow.transfer.Transfer;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObjectBuilder;
 
 public class Test {
 
@@ -51,8 +59,8 @@ public class Test {
 		displayHashtable(accountHashtable);
 
 		// 2.1 Json File of Flows
-		// Path jsonFilePath = Path.of("files/flow.json");
-		// saveFlowsToJson(jsonFilePath, flows);
+		Path jsonFilePath = Path.of("flows.json");
+		saveFlowsToJson(jsonFilePath, flows);
 	}
 
 	private static Collection<Client> loadClients() {
@@ -183,30 +191,48 @@ public class Test {
 	 * @param flows
 	 */
 	private static void saveFlowsToJson(Path jsonFilePath, Collection<Flow> flows) {
-		/*
-		 * try { // Build a JSON array with the flowlist elements JsonArrayBuilder
-		 * jsonArrayBuilder = Json.createArrayBuilder(); for (Flow flow : flowList) {
-		 * JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
-		 * .add("comment", flow.getComment()) .add("identifier", flow.getIdentifier())
-		 * .add("amount", flow.getAmount()) .add("targetAccountNumber",
-		 * flow.getTargetAccountNumber()) .add("effect", flow.isEffect());
-		 * 
-		 * // Si es una transferencia, agrega sourceAccountNumber al objeto JSON if
-		 * (flow instanceof Transfer) { Transfer transfer = (Transfer) flow;
-		 * jsonObjectBuilder.add("sourceAccountNumber",
-		 * transfer.getSourceAccountNumber()); }
-		 * 
-		 * jsonArrayBuilder.add(jsonObjectBuilder); }
-		 * 
-		 * JsonArray jsonArray = jsonArrayBuilder.build();
-		 * 
-		 * // Escribe el array JSON en el archivo Files.writeString(jsonFilePath,
-		 * jsonArray.toString());
-		 * 
-		 * System.out.println("Flows guardados en el archivo JSON.");
-		 * 
-		 * } catch (IOException e) { // Maneja la excepción, por ejemplo, registra o
-		 * lanza una excepción personalizada e.printStackTrace(); } }
-		 */
+
+		try {
+			// Verifica si el archivo ya existe
+			boolean fileExists = Files.exists(jsonFilePath);
+
+			// Construye un array JSON con los elementos de flowList
+			JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+			// to format date in flows and append to jsonObjectBuilder
+			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			for (Flow flow : flows) {
+				JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder().add("comment", flow.getComment())
+						.add("identifier", flow.getIdentifier()).add("amount", flow.getAmount())
+						.add("targetAccountNumber", flow.getTargetAccountNumber()).add("effect", flow.isEffect())
+						.add("date", flow.getDate().format(dateFormatter));
+
+				// Si es una transferencia, agrega AccountNumberIssuer al objeto JSON
+				if (flow instanceof Transfer) {
+					Transfer transfer = (Transfer) flow;
+					jsonObjectBuilder.add("accountNumberIssuer", transfer.getAccountNumberIssuer());
+				}
+
+				jsonArrayBuilder.add(jsonObjectBuilder);
+			}
+
+			JsonArray jsonArray = jsonArrayBuilder.build();
+
+			// If the file already exists, delete it before writing the new data.
+			if (fileExists) {
+				Files.delete(jsonFilePath);
+			}
+
+			// Write the Json array in the file
+			Files.writeString(jsonFilePath, jsonArray.toString());
+
+			System.out.println("Flows guardados en el archivo JSON.");
+
+		} catch (IOException e) {
+			// Maneja la excepción, por ejemplo, registra o lanza una excepción
+			// personalizada
+			e.printStackTrace();
+		}
+
 	}
 }

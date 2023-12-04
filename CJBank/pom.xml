@@ -3,6 +3,14 @@
   <groupId>CJBank</groupId>
   <artifactId>CJBank</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+	  <dependency>
+    	<groupId>org.glassfish</groupId>
+    	<artifactId>jakarta.json</artifactId>
+    	<version>2.0.1</version>
+	</dependency>
+
+  </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
