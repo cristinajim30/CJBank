@@ -1,6 +1,7 @@
 package com.cjbank.main;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -11,6 +12,19 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.cjbank.client.Client;
 import com.cjbank.client.account.Account;
@@ -26,7 +40,7 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
 
-public class Test {
+public class Test implements com.cjbank.IConstants {
 
 	public static void main(String[] args) {
 		// 1.1.2 Creation of main class for tests
@@ -52,6 +66,7 @@ public class Test {
 		// 1.3.4 Creation of the flow array
 		// Create a Flow array using the method
 		Collection<Flow> flows = loadFlows(accounts);
+		// displayFlows(flows);REMOVE THIS LINE
 
 		// 1.3.5 Updating accounts
 		Account.updateBalances(flows, accountHashtable);
@@ -59,8 +74,12 @@ public class Test {
 		displayHashtable(accountHashtable);
 
 		// 2.1 Json File of Flows
-		Path jsonFilePath = Path.of("flows.json");
+		Path jsonFilePath = FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_JSON);
 		saveFlowsToJson(jsonFilePath, flows);
+
+		// 2.2 XML file of account
+		Path xmlFilePath = FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_XML);
+		writeAccountsToXML(xmlFilePath, accounts);
 	}
 
 	private static Collection<Client> loadClients() {
@@ -192,32 +211,46 @@ public class Test {
 	 */
 	private static void saveFlowsToJson(Path jsonFilePath, Collection<Flow> flows) {
 
+		// Build a JSON array with the elements of flowList
+		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+		// date format in flows and append to jsonObjectBuilder
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
+
+		for (Flow flow : flows) {
+			JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder().add(FLOW_COMMENT, flow.getComment())
+					.add(FLOW_IDENTIFIER, flow.getIdentifier()).add(FLOW_AMOUNT, flow.getAmount())
+					.add(FLOW_TARGETACCOUNTNUMBER, flow.getTargetAccountNumber()).add(FLOW_EFFECT, flow.isEffect())
+					.add(FLOW_DATE, flow.getDate().format(dateFormatter));
+
+			// If it is a transfer, add AccountNumberIssuer to JSON object
+			if (flow instanceof Transfer) {
+				Transfer transfer = (Transfer) flow;
+				jsonObjectBuilder.add(FLOW_ACCOUNTNUMBERISSUER, transfer.getAccountNumberIssuer());
+			}
+			// add our ObjectBuilder into the ArrayBuilder
+			jsonArrayBuilder.add(jsonObjectBuilder);
+		}
+		// build the jsonArray
+		JsonArray jsonArray = jsonArrayBuilder.build();
+
+		writeJsonFile(jsonFilePath, jsonArray);
+
+	}
+
+	private static void writeJsonFile(Path jsonFilePath, JsonArray jsonArray) {
 		try {
-			// Verifica si el archivo ya existe
+			Path folderPath = FileSystems.getDefault().getPath(FILE_DIRECTORY);
+			// Check if the file already exists
 			boolean fileExists = Files.exists(jsonFilePath);
 
-			// Construye un array JSON con los elementos de flowList
-			JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-			// to format date in flows and append to jsonObjectBuilder
-			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-			for (Flow flow : flows) {
-				JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder().add("comment", flow.getComment())
-						.add("identifier", flow.getIdentifier()).add("amount", flow.getAmount())
-						.add("targetAccountNumber", flow.getTargetAccountNumber()).add("effect", flow.isEffect())
-						.add("date", flow.getDate().format(dateFormatter));
-
-				// Si es una transferencia, agrega AccountNumberIssuer al objeto JSON
-				if (flow instanceof Transfer) {
-					Transfer transfer = (Transfer) flow;
-					jsonObjectBuilder.add("accountNumberIssuer", transfer.getAccountNumberIssuer());
+			// Create the File folder if not exist
+			if (Files.notExists(folderPath)) {
+				try {
+					Files.createDirectories(folderPath);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-
-				jsonArrayBuilder.add(jsonObjectBuilder);
 			}
-
-			JsonArray jsonArray = jsonArrayBuilder.build();
-
 			// If the file already exists, delete it before writing the new data.
 			if (fileExists) {
 				Files.delete(jsonFilePath);
@@ -226,13 +259,92 @@ public class Test {
 			// Write the Json array in the file
 			Files.writeString(jsonFilePath, jsonArray.toString());
 
-			System.out.println("Flows guardados en el archivo JSON.");
-
+			System.out.println("Flows stored in the JSON file.");
 		} catch (IOException e) {
-			// Maneja la excepción, por ejemplo, registra o lanza una excepción
-			// personalizada
+			e.printStackTrace();
+		}
+	}
+
+	private static void writeAccountsToXML(Path xmlFilePath, Collection<Account> accounts) {
+		try {
+			// Crea una nueva instancia de DocumentBuilderFactory
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder;
+
+			docBuilder = docFactory.newDocumentBuilder();
+
+			// Crea un nuevo documento XML
+			Document doc = docBuilder.newDocument();
+
+			// Crea el elemento raíz
+			Element rootElement = doc.createElement("accounts");
+			doc.appendChild(rootElement);
+
+			// Agrega elementos para cada cuenta
+			for (Account account : accounts) {
+				Element accountElement = doc.createElement("account");
+				rootElement.appendChild(accountElement);
+
+				Element accountNumberElement = doc.createElement("accountNumber");
+				accountNumberElement.appendChild(doc.createTextNode(String.valueOf(account.getAccountNumber())));
+				accountElement.appendChild(accountNumberElement);
+
+				Element labelElement = doc.createElement("label");
+				labelElement.appendChild(doc.createTextNode(account.getLabel()));
+				accountElement.appendChild(labelElement);
+
+				Element balanceElement = doc.createElement("balance");
+				balanceElement.appendChild(doc.createTextNode(String.valueOf(account.getBalance())));
+				accountElement.appendChild(balanceElement);
+
+				Element clientElement = doc.createElement("client");
+				accountElement.appendChild(clientElement);
+
+				// Agrega los nodos hijos del elemento Client
+				Element nameElement = doc.createElement("name");
+				nameElement.appendChild(doc.createTextNode(account.getClient().getName()));
+				clientElement.appendChild(nameElement);
+
+				Element firstnameElement = doc.createElement("firstname");
+				firstnameElement.appendChild(doc.createTextNode(account.getClient().getFirstname()));
+				clientElement.appendChild(firstnameElement);
+
+				Element clientNumberElement = doc.createElement("clientNumber");
+				clientNumberElement
+						.appendChild(doc.createTextNode(String.valueOf(account.getClient().getClientNumber())));
+				clientElement.appendChild(clientNumberElement);
+
+				// Agrega el elemento de cuenta al elemento raíz
+				rootElement.appendChild(accountElement);
+			}
+
+			writeXmlFile(xmlFilePath, doc);
+		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
 
 	}
+
+	private static void writeXmlFile(Path xmlFilePath, Document doc) {
+		try {
+			// Guarda el documento XML en el archivo especificado
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer;
+			transformer = transformerFactory.newTransformer();
+
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(xmlFilePath.toFile());
+
+			// Configura el formato de salida (opcional)
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+			// Realiza la transformación y guarda el archivo
+			transformer.transform(source, result);
+			System.out.println("Cuentas guardadas en el archivo XML: " + xmlFilePath);
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 }
