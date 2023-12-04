@@ -260,16 +260,13 @@ public class Test implements com.cjbank.IConstants {
 	private static void checkFileDirectoryExists() {
 		Path folderPath = FileSystems.getDefault().getPath(FILE_DIRECTORY);
 		// Create the File folder if not exist
-		System.out.println("antes if");
 		if (Files.notExists(folderPath)) {
 			try {
-				System.out.println("entra en if porque no existe");
 				Files.createDirectories(folderPath);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("fin metodo");
 	}
 
 	private static void writeAccountsToXML(Path xmlFilePath, Collection<Account> accounts) {
