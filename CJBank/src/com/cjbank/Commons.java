@@ -25,7 +25,10 @@ public class Commons {
 	public static final String FICH_LOG = "logfile.log";
 
 	/**
-	 * Method that creates the File directory if it doesn't exist
+	 * Method that creates a directory passed by parameter if doesn't exist
+	 * 
+	 * @param path
+	 * @param logger
 	 */
 	public static void checkFileDirectoryExists(Path path, Logger logger) {
 		if (Files.notExists(path)) {
