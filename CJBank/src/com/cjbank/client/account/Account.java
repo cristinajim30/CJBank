@@ -21,7 +21,7 @@ public abstract class Account {
 	// Static variable to know total accounts
 	protected static int totalAccounts = 1;
 
-	public Account(String label, Client client) {
+	protected Account(String label, Client client) {
 		this.label = label;
 		this.client = client;
 		this.accountNumber = totalAccounts++;
