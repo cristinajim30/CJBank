@@ -44,7 +44,7 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
 
-public class Test implements com.cjbank.IConstants {
+public class Test extends com.cjbank.Commons {
 	// create a logger object for logging
 	public static final Logger logger = Logger.getLogger(LOGGER_NAME);
 
@@ -89,12 +89,10 @@ public class Test implements com.cjbank.IConstants {
 		displayHashtable(accountHashtable);
 
 		// 2.1 Json File of Flows
-		Path jsonFilePath = FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_JSON);
-		saveFlowsToJson(jsonFilePath, flows);
+		saveFlowsToJson(FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_JSON), flows);
 
 		// 2.2 XML file of account
-		Path xmlFilePath = FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_XML);
-		writeAccountsToXML(xmlFilePath, accounts);
+		writeAccountsToXML(FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_XML), accounts);
 		logger.setLevel(Level.FINE);
 		logger.log(Level.FINE, "-----The process has been successfully completed-----");
 	}
@@ -248,10 +246,9 @@ public class Test implements com.cjbank.IConstants {
 	 */
 	private static void writeJsonFile(Path jsonFilePath, JsonArray jsonArray) {
 		try {
-
 			// Check if the file and the "File" directory already exists
 			boolean fileExists = Files.exists(jsonFilePath);
-			checkFileDirectoryExists();
+			checkFileDirectoryExists(FileSystems.getDefault().getPath(FILE_DIRECTORY), logger);
 			// If the file already exists, delete it before writing the new data.
 			if (fileExists) {
 				logger.log(Level.INFO, "JsonFile already exists and its to be deleted: {0}", jsonFilePath);
@@ -263,26 +260,11 @@ public class Test implements com.cjbank.IConstants {
 			logger.setLevel(Level.FINE);
 			logger.log(Level.FINE, "Flows stored in the JSON file: {0}", jsonFilePath);
 			System.out.println("Flows stored in the JSON file: " + jsonFilePath);
+
 		} catch (IOException e) {
+			logger.setLevel(Level.WARNING);
 			logger.log(Level.WARNING, "IOException in writeJsonFile: ", e);
 			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Method that creates the File directory if it doesn't exist
-	 */
-	public static void checkFileDirectoryExists() {
-		Path folderPath = FileSystems.getDefault().getPath(FILE_DIRECTORY);
-		// Create the File folder if not exist
-		if (Files.notExists(folderPath)) {
-			try {
-				Files.createDirectories(folderPath);
-				logger.log(Level.INFO, "Directorio creado: {0}", folderPath);
-			} catch (IOException e) {
-				logger.log(Level.WARNING, "IOException in checkFileDirectoryExists: ", e);
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -348,6 +330,7 @@ public class Test implements com.cjbank.IConstants {
 			logger.log(Level.INFO, "Xml Documment created");
 			writeXmlFile(xmlFilePath, doc);
 		} catch (ParserConfigurationException e) {
+			logger.setLevel(Level.WARNING);
 			logger.log(Level.WARNING, "ParserConfigurationException in writeAccountsToXML: ", e);
 			e.printStackTrace();
 		}
@@ -364,7 +347,7 @@ public class Test implements com.cjbank.IConstants {
 		try {
 			// Check if the file already exists
 			boolean fileExists = Files.exists(xmlFilePath);
-			checkFileDirectoryExists();
+			checkFileDirectoryExists(FileSystems.getDefault().getPath(FILE_DIRECTORY), logger);
 			// If the file already exists, delete it before writing the new data.
 			if (fileExists) {
 				logger.log(Level.INFO, "The XML file exists, so delete it: {0}", xmlFilePath);
@@ -389,6 +372,7 @@ public class Test implements com.cjbank.IConstants {
 			System.out.println("Accounts stored in the XML file: " + xmlFilePath);
 
 		} catch (TransformerException | IOException e) {
+			logger.setLevel(Level.WARNING);
 			logger.log(Level.WARNING, "Exception in writeXMLFile: ", e);
 			e.printStackTrace();
 		}
