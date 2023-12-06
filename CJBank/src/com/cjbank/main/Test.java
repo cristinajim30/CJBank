@@ -115,13 +115,6 @@ public class Test extends com.cjbank.Commons {
 		return tempSet;
 	}
 
-	private static Client generateClient(int clientNumber) {
-		String name = "name" + clientNumber;
-		String firstName = "firstname" + clientNumber;
-		logger.log(Level.INFO, "name {0}, firstname {0}", clientNumber);
-		return new Client(name, firstName);
-	}
-
 	private static void displayClients(Collection<Client> clientsSet) {
 		System.out.println("---------CLIENTS----------");
 		clientsSet.stream().forEach(client -> System.out.println(client.toString()));
