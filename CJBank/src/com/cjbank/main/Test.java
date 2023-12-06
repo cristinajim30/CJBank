@@ -107,7 +107,8 @@ public class Test extends com.cjbank.Commons {
 
 		// create 10 clients
 		for (int i = 0; i < 10; i++) {
-			tempSet.add(generateClient(i + 1));
+			tempSet.add(new Client("name" + (i + 1), "firstName" + (i + 1)));
+			logger.log(Level.INFO, "name {0}, firstname {0}", i);
 		}
 		logger.setLevel(Level.FINE);
 		logger.log(Level.FINE, "Clients created");
