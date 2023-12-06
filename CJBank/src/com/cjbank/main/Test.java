@@ -49,14 +49,18 @@ public class Test extends com.cjbank.Commons {
 	public static final Logger logger = Logger.getLogger(LOGGER_NAME);
 
 	public static void main(String[] args) {
+		FileHandler fh = null;
 		try {
-			FileHandler fh = new FileHandler(FICH_LOG, true);
-			SimpleFormatter formato = new SimpleFormatter();
-			logger.addHandler(fh);
-			fh.setFormatter(formato);
+			fh = new FileHandler(FICH_LOG, true);
+
 		} catch (SecurityException | IOException e) {
 			logger.log(Level.WARNING, "Exception creating Logger object: ", e);
 			e.printStackTrace();
+		}
+		if (fh != null) {
+			SimpleFormatter formato = new SimpleFormatter();
+			logger.addHandler(fh);
+			fh.setFormatter(formato);
 		}
 
 		// 1.1.2 Creation of main class for tests
