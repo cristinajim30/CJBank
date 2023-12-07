@@ -18,7 +18,6 @@ import java.util.logging.SimpleFormatter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -30,6 +29,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.cjbank.client.Client;
 import com.cjbank.client.account.Account;
@@ -73,7 +74,8 @@ public class Test extends com.cjbank.Commons {
 		displayClients(clientsSet);
 
 		// 1.2.3 Creation of the tablea account
-		Collection<Account> accounts = loadAccounts(clientsSet);
+		Collection<Account> accounts;
+		accounts = loadAccounts(clientsSet);
 		displayAccounts(accounts);
 
 		// 1.3.1 Adaptation of the table of accounts
@@ -83,20 +85,21 @@ public class Test extends com.cjbank.Commons {
 
 		// 1.3.4 Creation of the flow array
 		// Create a Flow array using the method
-		Collection<Flow> flows = loadFlows(accounts);
+		Collection<Flow> flows;
+		flows = loadFlows(accounts);
 
 		// 1.3.5 Updating accounts
 		Account.updateBalances(flows, accountHashtable);
 		// display Hashtable with the update balances
-		displayHashtable(accountHashtable);
+		// displayHashtable(accountHashtable);
 
 		// 2.1 Json File of Flows
-		loadJsonAndFillFlowArray(FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_JSON), flows);
-		// displayFlows(flows);
+		flows = loadJsonAndFillFlowArray(FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_JSON), flows);
+		displayFlows(flows);
 
 		// 2.2 XML file of account
-		// writeAccountsToXML(FileSystems.getDefault().getPath(FILE_DIRECTORY,
-		// FILE_XML), accounts);
+		accounts = loadXmlAndFillAccountsArray(FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_XML));
+		displayAccounts(accounts);
 		logger.setLevel(Level.FINE);
 		logger.log(Level.FINE, "-----The process has been successfully completed-----");
 	}
@@ -203,20 +206,11 @@ public class Test extends com.cjbank.Commons {
 	}
 
 	private static void displayFlows(Collection<Flow> flows) {
+		System.out.println("Flow");
 		for (Flow flow : flows) {
-			System.out.println("flowClass: " + flow.getClass().getSimpleName());
-			System.out.println("flowIdentifier: " + flow.getIdentifier());
-			System.out.println("targetAccountNumber: " + flow.getTargetAccountNumber());
-			System.out.println("flowAmmount: " + flow.getAmount());
-			System.out.println("flowComment: " + flow.getComment());
-			System.out.println("flowDate: " + flow.getDate());
-			if (flow instanceof Transfer) {
-				Transfer t = (Transfer) flow;
-				System.out.println("Issuer: " + t.getAccountNumberIssuer());
-			}
-
-			System.out.println("--------------------");
+			System.out.println(flow.toString());
 		}
+		System.out.println("----------");
 	}
 
 	/***
@@ -225,7 +219,8 @@ public class Test extends com.cjbank.Commons {
 	 * @param jsonFilePath
 	 * @param flows
 	 */
-	private static void loadJsonAndFillFlowArray(Path jsonFilePath, Collection<Flow> flows) {
+	private static Collection<Flow> loadJsonAndFillFlowArray(Path jsonFilePath, Collection<Flow> flows) {
+		Collection<Flow> flowsArray = new ArrayList<>();
 		String content = "";
 
 		try {
@@ -237,48 +232,57 @@ public class Test extends com.cjbank.Commons {
 
 		JSONObject jsonObject = new JSONObject(content);
 		JSONArray jsonArray = jsonObject.getJSONArray("Flows");
+
+		Flow newFlow;
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject jsonFlow = jsonArray.getJSONObject(i);
 			// Parse the date field to a LocalDate object
 			LocalDate date = LocalDate.parse(jsonFlow.getString("date"));
 
-			Flow flow = null;
+			newFlow = transformFlow(jsonFlow,
+					jsonArray.getJSONObject(i).getString(FLOW_COMMENT).toLowerCase().substring(0, 1));
 
-			// switch according to the first letter of the comment
-			switch (jsonArray.getJSONObject(i).getString(FLOW_COMMENT).toLowerCase().substring(0, 1)) {
-
-			case "d":
-				flow = new Debit(jsonFlow.getString("comment"), jsonFlow.getInt("identifier"),
-						jsonFlow.getDouble("amount"), jsonFlow.getInt("targetAccountNumber"),
-						jsonFlow.getBoolean("effect"), date);
-				break;
-
-			case "c":
-				flow = new Credit(jsonFlow.getString(FLOW_COMMENT), jsonFlow.getInt("identifier"),
-						jsonFlow.getDouble("amount"), jsonFlow.getInt("targetAccountNumber"),
-						jsonFlow.getBoolean("effect"), date);
-				break;
-
-			case "t":
-
-				flow = new Transfer(jsonFlow.getString(FLOW_COMMENT), jsonFlow.getInt("identifier"),
-						jsonFlow.getDouble("amount"), jsonFlow.getInt("targetAccountNumber"),
-						jsonFlow.getBoolean("effect"), date, jsonFlow.getInt("accountNumberIssuer"));
-				break;
-
-			default:
-				flow = null;
-			}
-
-			if (flow != null) {
-				flows.add(flow);
+			if (newFlow != null) {
+				flowsArray.add(newFlow);
 			}
 
 		}
+		return flowsArray;
+	}
+
+	private static Flow transformFlow(JSONObject jsonFlow, String condition) {
+		Flow flow = null;
+		LocalDate date = LocalDate.parse(jsonFlow.getString("date"));
+
+		// switch according to the first letter of the comment
+		switch (condition) {
+
+		case "d":
+			flow = new Debit(jsonFlow.getString("comment"), jsonFlow.getInt("identifier"), jsonFlow.getDouble("amount"),
+					jsonFlow.getInt("targetAccountNumber"), jsonFlow.getBoolean("effect"), date);
+			break;
+
+		case "c":
+			flow = new Credit(jsonFlow.getString(FLOW_COMMENT), jsonFlow.getInt("identifier"),
+					jsonFlow.getDouble("amount"), jsonFlow.getInt("targetAccountNumber"), jsonFlow.getBoolean("effect"),
+					date);
+			break;
+
+		case "t":
+
+			flow = new Transfer(jsonFlow.getString(FLOW_COMMENT), jsonFlow.getInt("identifier"),
+					jsonFlow.getDouble("amount"), jsonFlow.getInt("targetAccountNumber"), jsonFlow.getBoolean("effect"),
+					date, jsonFlow.getInt("accountNumberIssuer"));
+			break;
+
+		default:
+			flow = null;
+		}
+		return flow;
 	}
 
 	/**
-	 * Method to write json array in a json file
+	 * CURRENTLY THIS METHOD IS NOT USED Method to write json array in a json file
 	 * 
 	 * @param jsonFilePath
 	 * @param jsonArray
@@ -314,70 +318,52 @@ public class Test extends com.cjbank.Commons {
 	 * @param xmlFilePath
 	 * @param accounts
 	 */
-	private static void writeAccountsToXML(Path xmlFilePath, Collection<Account> accounts) {
+	private static ArrayList<Account> loadXmlAndFillAccountsArray(Path xmlFilePath) {
+		ArrayList<Account> accountCollection = new ArrayList<>();
+		// Create a DocumentBuilder
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
 		try {
-			// Create a new instance of DocumentBuilderFactory
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder;
 
-			docBuilder = docFactory.newDocumentBuilder();
+			DocumentBuilder builder = factory.newDocumentBuilder();
 
-			// Create a new document XML
-			Document doc = docBuilder.newDocument();
+			// Parse the XML file
+			Document document = builder.parse(Files.newInputStream(xmlFilePath));
+			document.getDocumentElement().normalize();
+			// Get the root element
+			Element rootElement = document.getDocumentElement();
 
-			// Create the root element
-			Element rootElement = doc.createElement("accounts");
-			doc.appendChild(rootElement);
+			// Get a NodeList of account elements
+			NodeList accountNodes = rootElement.getElementsByTagName("account");
+			Element clientElement;
+			Client auxClient;
+			// Iterate through account elements
+			for (int i = 0; i < accountNodes.getLength(); i++) {
+				Node nodeAccount = accountNodes.item(i);
+				// System.out.println("\nNodeAccount Name :" + nodeAccount.getNodeName());
 
-			// Add items for each account
-			for (Account account : accounts) {
-				Element accountElement = doc.createElement("account");
-				rootElement.appendChild(accountElement);
+				if (nodeAccount.getNodeType() == Node.ELEMENT_NODE) {
+					clientElement = (Element) nodeAccount;
+					auxClient = new Client(clientElement.getElementsByTagName("name").item(0).getTextContent(),
+							clientElement.getElementsByTagName("firstname").item(0).getTextContent());
+					accountCollection.add(new Account(
+							clientElement.getElementsByTagName("label").item(0).getTextContent(), auxClient) {
+					});
+				}
 
-				Element accountNumberElement = doc.createElement("accountNumber");
-				accountNumberElement.appendChild(doc.createTextNode(String.valueOf(account.getAccountNumber())));
-				accountElement.appendChild(accountNumberElement);
-
-				Element labelElement = doc.createElement("label");
-				labelElement.appendChild(doc.createTextNode(account.getLabel()));
-				accountElement.appendChild(labelElement);
-
-				Element balanceElement = doc.createElement("balance");
-				balanceElement.appendChild(doc.createTextNode(String.valueOf(account.getBalance())));
-				accountElement.appendChild(balanceElement);
-
-				Element clientElement = doc.createElement("client");
-				accountElement.appendChild(clientElement);
-
-				// Adds the child nodes of the Client element
-				Element nameElement = doc.createElement("name");
-				nameElement.appendChild(doc.createTextNode(account.getClient().getName()));
-				clientElement.appendChild(nameElement);
-
-				Element firstnameElement = doc.createElement("firstname");
-				firstnameElement.appendChild(doc.createTextNode(account.getClient().getFirstname()));
-				clientElement.appendChild(firstnameElement);
-
-				Element clientNumberElement = doc.createElement("clientNumber");
-				clientNumberElement
-						.appendChild(doc.createTextNode(String.valueOf(account.getClient().getClientNumber())));
-				clientElement.appendChild(clientNumberElement);
-
-				// Adds the account element to the root element
-				rootElement.appendChild(accountElement);
 			}
-			logger.log(Level.INFO, "Xml Documment created");
-			writeXmlFile(xmlFilePath, doc);
-		} catch (ParserConfigurationException e) {
+		} catch (Exception e) {
 			logger.setLevel(Level.WARNING);
-			logger.log(Level.WARNING, "ParserConfigurationException in writeAccountsToXML: ", e);
+			logger.log(Level.WARNING, "Exception reading XMLFile: ", e);
 			e.printStackTrace();
 		}
 
+		return accountCollection;
 	}
 
 	/**
-	 * method to write the XML document into a file
+	 * CURRENTLY THIS METHOD IS NOT USED method to write the XML document into a
+	 * file
 	 * 
 	 * @param xmlFilePath
 	 * @param doc

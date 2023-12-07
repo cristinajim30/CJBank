@@ -69,4 +69,10 @@ public abstract class Flow {
 		this.date = date;
 	}
 
+	@Override
+	public String toString() {
+		return "Flow [comment=" + comment + ", identifier=" + identifier + ", amount=" + amount
+				+ ", targetAccountNumber=" + targetAccountNumber + ", effect=" + effect + ", date=" + date + "]";
+	}
+
 }
