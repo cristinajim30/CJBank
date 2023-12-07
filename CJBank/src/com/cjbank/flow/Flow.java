@@ -11,7 +11,7 @@ public abstract class Flow {
 	private boolean effect;
 	private LocalDate date;
 
-	protected Flow(String comment, int identifier, double amount, int targetAccountNumber, boolean effect,
+	public Flow(String comment, int identifier, double amount, int targetAccountNumber, boolean effect,
 			LocalDate date) {
 		this.comment = comment;
 		this.identifier = identifier;

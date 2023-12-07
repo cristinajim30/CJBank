@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -27,6 +26,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -39,10 +40,7 @@ import com.cjbank.flow.credit.Credit;
 import com.cjbank.flow.debit.Debit;
 import com.cjbank.flow.transfer.Transfer;
 
-import jakarta.json.Json;
 import jakarta.json.JsonArray;
-import jakarta.json.JsonArrayBuilder;
-import jakarta.json.JsonObjectBuilder;
 
 public class Test extends com.cjbank.Commons {
 	// create a logger object for logging
@@ -93,10 +91,12 @@ public class Test extends com.cjbank.Commons {
 		displayHashtable(accountHashtable);
 
 		// 2.1 Json File of Flows
-		saveFlowsToJson(FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_JSON), flows);
+		loadJsonAndFillFlowArray(FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_JSON), flows);
+		// displayFlows(flows);
 
 		// 2.2 XML file of account
-		writeAccountsToXML(FileSystems.getDefault().getPath(FILE_DIRECTORY, FILE_XML), accounts);
+		// writeAccountsToXML(FileSystems.getDefault().getPath(FILE_DIRECTORY,
+		// FILE_XML), accounts);
 		logger.setLevel(Level.FINE);
 		logger.log(Level.FINE, "-----The process has been successfully completed-----");
 	}
@@ -202,38 +202,79 @@ public class Test extends com.cjbank.Commons {
 		return flowList;
 	}
 
+	private static void displayFlows(Collection<Flow> flows) {
+		for (Flow flow : flows) {
+			System.out.println("flowClass: " + flow.getClass().getSimpleName());
+			System.out.println("flowIdentifier: " + flow.getIdentifier());
+			System.out.println("targetAccountNumber: " + flow.getTargetAccountNumber());
+			System.out.println("flowAmmount: " + flow.getAmount());
+			System.out.println("flowComment: " + flow.getComment());
+			System.out.println("flowDate: " + flow.getDate());
+			if (flow instanceof Transfer) {
+				Transfer t = (Transfer) flow;
+				System.out.println("Issuer: " + t.getAccountNumberIssuer());
+			}
+
+			System.out.println("--------------------");
+		}
+	}
+
 	/***
 	 * Method to save Flow array into a json file
 	 * 
 	 * @param jsonFilePath
 	 * @param flows
 	 */
-	private static void saveFlowsToJson(Path jsonFilePath, Collection<Flow> flows) {
+	private static void loadJsonAndFillFlowArray(Path jsonFilePath, Collection<Flow> flows) {
+		String content = "";
 
-		// Build a JSON array with the elements of flowList
-		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-		// date format in flows and append to jsonObjectBuilder
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
+		try {
+			content = new String(Files.readAllBytes(jsonFilePath));
 
-		for (Flow flow : flows) {
-			JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder().add(FLOW_COMMENT, flow.getComment())
-					.add(FLOW_IDENTIFIER, flow.getIdentifier()).add(FLOW_AMOUNT, flow.getAmount())
-					.add(FLOW_TARGETACCOUNTNUMBER, flow.getTargetAccountNumber()).add(FLOW_EFFECT, flow.isEffect())
-					.add(FLOW_DATE, flow.getDate().format(dateFormatter));
-
-			// If it is a transfer, add AccountNumberIssuer to JSON object
-			if (flow instanceof Transfer) {
-				Transfer transfer = (Transfer) flow;
-				jsonObjectBuilder.add(FLOW_ACCOUNTNUMBERISSUER, transfer.getAccountNumberIssuer());
-			}
-			// add our ObjectBuilder into the ArrayBuilder
-			jsonArrayBuilder.add(jsonObjectBuilder);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		// build the jsonArray
-		JsonArray jsonArray = jsonArrayBuilder.build();
-		logger.log(Level.INFO, "jsonArray created: {0}", jsonArray);
-		writeJsonFile(jsonFilePath, jsonArray);
 
+		JSONObject jsonObject = new JSONObject(content);
+		JSONArray jsonArray = jsonObject.getJSONArray("Flows");
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonFlow = jsonArray.getJSONObject(i);
+			// Parse the date field to a LocalDate object
+			LocalDate date = LocalDate.parse(jsonFlow.getString("date"));
+
+			Flow flow = null;
+
+			// switch according to the first letter of the comment
+			switch (jsonArray.getJSONObject(i).getString(FLOW_COMMENT).toLowerCase().substring(0, 1)) {
+
+			case "d":
+				flow = new Debit(jsonFlow.getString("comment"), jsonFlow.getInt("identifier"),
+						jsonFlow.getDouble("amount"), jsonFlow.getInt("targetAccountNumber"),
+						jsonFlow.getBoolean("effect"), date);
+				break;
+
+			case "c":
+				flow = new Credit(jsonFlow.getString(FLOW_COMMENT), jsonFlow.getInt("identifier"),
+						jsonFlow.getDouble("amount"), jsonFlow.getInt("targetAccountNumber"),
+						jsonFlow.getBoolean("effect"), date);
+				break;
+
+			case "t":
+
+				flow = new Transfer(jsonFlow.getString(FLOW_COMMENT), jsonFlow.getInt("identifier"),
+						jsonFlow.getDouble("amount"), jsonFlow.getInt("targetAccountNumber"),
+						jsonFlow.getBoolean("effect"), date, jsonFlow.getInt("accountNumberIssuer"));
+				break;
+
+			default:
+				flow = null;
+			}
+
+			if (flow != null) {
+				flows.add(flow);
+			}
+
+		}
 	}
 
 	/**
